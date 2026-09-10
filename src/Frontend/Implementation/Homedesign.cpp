@@ -32,28 +32,28 @@ void Home_UI::text_CallBreak()
     DrawTextEx(
         Cinzel_load,
         "Call-Break Game",
-        (Vector2){(float)((GetScreenWidth() / 2.0) - 240), 60},
+        Vector2{(float)((GetScreenWidth() / 2.0) - 240), 60},
         75,
         1,
         GOLD);
     DrawTextEx(
         Cinzel_load,
         "PLAY WITH BOT",
-        (Vector2){(float)160.0, (float)560.0},
+        Vector2{(float)160.0, (float)560.0},
         30,
         0.5f,
         Text_color_Home);
     DrawTextEx(
         Cinzel_load,
         "PLAY WITH HUMAN",
-        (Vector2){(float)870.0, (float)560.0},
+        Vector2{(float)870.0, (float)560.0},
         30,
         0.5f,
         Text_color_Home);
     DrawTextEx(
         Cinzel_load,
         "BY JUWADIS FOR JUWADIS",
-        (Vector2){(float)GetScreenWidth() - 400, (float)GetScreenHeight() - 50},
+        Vector2{(float)GetScreenWidth() - 400, (float)GetScreenHeight() - 50},
         35,
         0.5f,
         GOLD);
@@ -68,9 +68,9 @@ void Home_UI::img_machines(Rectangle Img_bot_machine_position)
 {
     DrawTexturePro(
         img_machine_load,
-        (Rectangle){0, 0, (float)img_machine_load.width, (float)img_machine_load.height},
+        Rectangle{0, 0, (float)img_machine_load.width, (float)img_machine_load.height},
         Img_bot_machine_position,
-        (Vector2){0, 0},
+        Vector2{0, 0},
         0.0f,
         WHITE);
 }
@@ -79,9 +79,9 @@ void Home_UI::img_human(Rectangle Img_bot_machine_position)
 {
     DrawTexturePro(
         img_human_load,
-        (Rectangle){0, 0, (float)img_human_load.width, (float)img_human_load.height},
+        Rectangle{0, 0, (float)img_human_load.width, (float)img_human_load.height},
         Img_bot_machine_position,
-        (Vector2){0, 0},
+        Vector2{0, 0},
         0.0f,
         WHITE);
 }
@@ -90,9 +90,9 @@ void Home_UI::Background()
 {
     DrawTexturePro(
         Background_Img_load,
-        (Rectangle){0, 0, (float)Background_Img_load.width, (float)Background_Img_load.height},
-        (Rectangle){0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()},
-        (Vector2){0, 0},
+        Rectangle{0, 0, (float)Background_Img_load.width, (float)Background_Img_load.height},
+        Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()},
+        Vector2{0, 0},
         0.0f,
         WHITE);
 }
