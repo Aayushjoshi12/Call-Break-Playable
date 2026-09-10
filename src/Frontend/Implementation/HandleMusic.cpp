@@ -36,9 +36,9 @@ void HandleMusic::Draw()
 
     DrawTexturePro(
         btn,
-        (Rectangle){ 0, 0, (float)btn.width, (float)btn.height },
+        Rectangle{ 0, 0, (float)btn.width, (float)btn.height },
         Mute_Button,
-        (Vector2){ 0, 0 },
+        Vector2{ 0, 0 },
         0.0f,
         WHITE);
 }
