@@ -13,3 +13,5 @@ This repo is copied from `Aayushjoshi12/Call-Break-Using-CPP`. The original repo
 5. Double-click `Play-Call-Break.bat`.
 
 The artifact includes `MyGame.exe`, `MyGameServer.exe`, and `Assets/`.
+
+Builds are created automatically by GitHub Actions.
