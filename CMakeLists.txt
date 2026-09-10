@@ -35,6 +35,8 @@ set(CORE_SOURCES
     src/Backend/Implementation/RoundManager.cpp
 )
 
+set(WINDOWS_RAYLIB_DEFINES WIN32_LEAN_AND_MEAN NOGDI NOUSER NOMINMAX _WINSOCK_DEPRECATED_NO_WARNINGS)
+
 add_executable(MyGame
     src/main.cpp
     src/Frontend/Implementation/Homedesign.cpp
@@ -52,7 +54,7 @@ target_link_libraries(MyGame PRIVATE raylib enet nlohmann_json::nlohmann_json)
 target_include_directories(MyGame PRIVATE ${enet_SOURCE_DIR}/include)
 
 if(WIN32)
-    target_compile_definitions(MyGame PRIVATE WIN32_LEAN_AND_MEAN NOGDI NOMINMAX _WINSOCK_DEPRECATED_NO_WARNINGS)
+    target_compile_definitions(MyGame PRIVATE ${WINDOWS_RAYLIB_DEFINES})
     target_link_options(MyGame PRIVATE -static)
 endif()
 
@@ -65,6 +67,6 @@ target_link_libraries(MyGameServer PRIVATE raylib enet nlohmann_json::nlohmann_j
 target_include_directories(MyGameServer PRIVATE ${enet_SOURCE_DIR}/include)
 
 if(WIN32)
-    target_compile_definitions(MyGameServer PRIVATE WIN32_LEAN_AND_MEAN NOGDI NOMINMAX _WINSOCK_DEPRECATED_NO_WARNINGS)
+    target_compile_definitions(MyGameServer PRIVATE ${WINDOWS_RAYLIB_DEFINES})
     target_link_options(MyGameServer PRIVATE -static)
 endif()
