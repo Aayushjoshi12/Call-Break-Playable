@@ -62,7 +62,7 @@ void BidScreen::Draw()
     DrawRectangleRounded({panelX + 8, panelY + 8, panelW, panelH}, 0.08f, 20, Fade(BLACK, 0.7f));
 
     // Main panel
-    DrawRectangleRounded({panelX, panelY, panelW, panelH}, 0.08f, 20, Color{20, 20, 20, 240});
+    DrawRectangleRounded({panelX, panelY, panelW, panelH}, 0.08f, 20, (Color){20, 20, 20, 240});
 
     // Border
     DrawRectangleRoundedLinesEx({panelX, panelY, panelW, panelH}, 0.08f, 20, 3, GOLD);
@@ -91,7 +91,7 @@ void BidScreen::Draw()
             DrawCircle(centerX, centerY, circleRadius + 6, Fade(GOLD, 0.35f));
         }
 
-        Color chipColor = selected ? GOLD : Color{210,210,210,255};
+        Color chipColor = selected ? GOLD : (Color){210,210,210,255};
 
         DrawCircle(centerX, centerY, circleRadius, chipColor);
         DrawCircleLines(centerX, centerY, circleRadius, selected ? WHITE : DARKGRAY);
@@ -137,9 +137,9 @@ void BidScreen::Draw()
     bool enabled = (selectedBid > 0);
 
     Color btnFill =
-        !enabled ? Color{60,60,60,255}
+        !enabled ? (Color){60,60,60,255}
         : hovered ? GOLD
-        : Color{180,140,30,255};
+        : (Color){180,140,30,255};
 
     Color btnText = !enabled ? GRAY : (hovered ? BLACK : WHITE);
 
