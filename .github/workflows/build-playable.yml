@@ -1,0 +1,125 @@
+name: Build playable Windows ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  sync-source:
+    name: Copy source from original repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip source sync]') }}
+    steps:
+      - name: Checkout playable repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone original repo without touching it
+        run: |
+          rm -rf /tmp/callbreak-source
+          git clone --depth 1 https://github.com/Aayushjoshi12/Call-Break-Using-CPP.git /tmp/callbreak-source
+
+      - name: Copy original files into playable repo
+        run: |
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name .git \
+            ! -name .github \
+            -exec rm -rf {} +
+          cp -a /tmp/callbreak-source/. .
+          rm -rf .git
+          mkdir -p .github/workflows
+          cat > Play-Call-Break.bat <<'BAT'
+          @echo off
+          cd /d "%~dp0"
+          if not exist "MyGame.exe" (
+            echo MyGame.exe was not found. Download the built Windows artifact, extract it, then run this file.
+            pause
+            exit /b 1
+          )
+          start "Call Break" "%~dp0MyGame.exe"
+          BAT
+          cat > README.md <<'MD'
+          # Call-Break-Playable
+
+          Playable packaged copy of the Call Break C++ game.
+
+          This repo is copied from `Aayushjoshi12/Call-Break-Using-CPP`. The original repo is not modified.
+
+          ## Direct play on Windows
+
+          1. Go to **Actions**.
+          2. Open the latest **Build playable Windows ZIP** run.
+          3. Download artifact: `Call-Break-Playable-Windows`.
+          4. Extract it.
+          5. Double-click `Play-Call-Break.bat`.
+
+          The artifact includes `MyGame.exe`, `MyGameServer.exe`, and `Assets/`.
+          MD
+
+      - name: Keep workflow file
+        run: |
+          git checkout HEAD -- .github/workflows/build-playable.yml
+
+      - name: Commit copied source if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+          else
+            git commit -m "Copy original Call Break source [skip source sync]"
+            git push
+          fi
+
+  build-windows:
+    name: Build Windows playable package
+    runs-on: windows-latest
+    needs: [sync-source]
+    if: always() && (needs.sync-source.result == 'success' || needs.sync-source.result == 'skipped')
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build game
+        shell: pwsh
+        run: |
+          cmake --build build --config Release
+
+      - name: Create playable folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path package | Out-Null
+          Copy-Item -LiteralPath build\Release\MyGame.exe -Destination package\MyGame.exe
+          if (Test-Path -LiteralPath build\Release\MyGameServer.exe) {
+            Copy-Item -LiteralPath build\Release\MyGameServer.exe -Destination package\MyGameServer.exe
+          }
+          Copy-Item -LiteralPath Assets -Destination package\Assets -Recurse
+          @'
+          @echo off
+          cd /d "%~dp0"
+          start "Call Break" "%~dp0MyGame.exe"
+          '@ | Set-Content -Encoding ASCII package\Play-Call-Break.bat
+          @'
+          Call Break Playable
+
+          Double-click Play-Call-Break.bat to start the game.
+          Keep the Assets folder beside MyGame.exe.
+          '@ | Set-Content -Encoding UTF8 package\HOW_TO_PLAY.txt
+
+      - name: Upload playable ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Call-Break-Playable-Windows
+          path: package
