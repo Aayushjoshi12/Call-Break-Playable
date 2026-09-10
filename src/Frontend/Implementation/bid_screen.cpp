@@ -6,7 +6,6 @@ BidScreen::BidScreen()
     cinzel = LoadFontEx("../Assets/fonts/Cinzel_Font.ttf", 96, 0, 0);
     confirmed = false;
 
-    // Must match Draw()'s panel size exactly, or buttons drift from what's rendered.
     float panelW = 600;
     float panelH = 500;
     float panelX = (GetScreenWidth() - panelW) / 2;
@@ -14,8 +13,6 @@ BidScreen::BidScreen()
 
     float circleRadius = 42;
 
-    // Build one Rectangle per chip, centered on the same point Draw() uses
-    // for its circle (centerX, centerY), sized to fully cover the circle.
     for (int i = 0; i < 8; i++)
     {
         int row = i / 4;
@@ -55,25 +52,14 @@ void BidScreen::Draw()
     float panelX = (GetScreenWidth() - panelW) / 2;
     float panelY = (GetScreenHeight() - panelH) / 2;
 
-    // Dark overlay
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.55f));
-
-    // Shadow
     DrawRectangleRounded({panelX + 8, panelY + 8, panelW, panelH}, 0.08f, 20, Fade(BLACK, 0.7f));
-
-    // Main panel
-    DrawRectangleRounded({panelX, panelY, panelW, panelH}, 0.08f, 20, (Color){20, 20, 20, 240});
-
-    // Border
+    DrawRectangleRounded({panelX, panelY, panelW, panelH}, 0.08f, 20, Color{20, 20, 20, 240});
     DrawRectangleRoundedLinesEx({panelX, panelY, panelW, panelH}, 0.08f, 20, 3, GOLD);
 
-    // Title
     DrawTextEx(cinzel, "CHOOSE YOUR BID", {panelX + 120, panelY + 25}, 38, 2, GOLD);
-
-    // Top divider
     DrawLineEx({panelX + 40, panelY + 78}, {panelX + panelW - 40, panelY + 78}, 2, Fade(GOLD, 0.5f));
 
-    // Bid circles
     float circleRadius = 42;
     for (int i = 0; i < 8; i++)
     {
@@ -91,7 +77,7 @@ void BidScreen::Draw()
             DrawCircle(centerX, centerY, circleRadius + 6, Fade(GOLD, 0.35f));
         }
 
-        Color chipColor = selected ? GOLD : (Color){210,210,210,255};
+        Color chipColor = selected ? GOLD : Color{210,210,210,255};
 
         DrawCircle(centerX, centerY, circleRadius, chipColor);
         DrawCircleLines(centerX, centerY, circleRadius, selected ? WHITE : DARKGRAY);
@@ -108,12 +94,9 @@ void BidScreen::Draw()
             selected ? BLACK : DARKGRAY);
     }
 
-    // Bottom divider
     float bottomLineY = panelY + panelH - 130;
-
     DrawLineEx({panelX + 40, bottomLineY}, {panelX + panelW - 40, bottomLineY}, 2, Fade(GOLD, 0.5f));
 
-    // Selected bid text
     const char* bidLabel = TextFormat("SELECTED BID : %d", selectedBid);
     Vector2 bidTextSize = MeasureTextEx(cinzel, bidLabel, 26, 2);
     DrawTextEx(
@@ -124,7 +107,6 @@ void BidScreen::Draw()
         2,
         GOLD);
 
-    // ---- CONFIRM BUTTON ----
     float btnW = 200;
     float btnH = 48;
     float btnX = panelX + (panelW - btnW) / 2;
@@ -137,9 +119,9 @@ void BidScreen::Draw()
     bool enabled = (selectedBid > 0);
 
     Color btnFill =
-        !enabled ? (Color){60,60,60,255}
+        !enabled ? Color{60,60,60,255}
         : hovered ? GOLD
-        : (Color){180,140,30,255};
+        : Color{180,140,30,255};
 
     Color btnText = !enabled ? GRAY : (hovered ? BLACK : WHITE);
 
