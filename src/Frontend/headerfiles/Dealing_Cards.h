@@ -1,8 +1,6 @@
 #pragma once
-#include "RendererInterface.h"
+#include"RendererInterface.h"
 #include "../../Backend/headerfiles/entities.h"
-#include <vector>
-
 // ─── AnimatedCard ─────────────────────────────────────────────────────────────
 struct AnimatedCard
 {
@@ -27,7 +25,7 @@ public:
     int getDealtCount() const;
 
 private:
-    std::vector<AnimatedCard> animCards;
+    vector<AnimatedCard> animCards;
     Texture2D cardTextures[52];
     int   currentCard;
     float dealDelay;
