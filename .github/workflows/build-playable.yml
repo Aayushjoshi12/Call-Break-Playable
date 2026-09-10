@@ -31,9 +31,10 @@ jobs:
             ! -name .git \
             ! -name .github \
             -exec rm -rf {} +
-          cp -a /tmp/callbreak-source/. .
-          rm -rf .git
-          mkdir -p .github/workflows
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            /tmp/callbreak-source/ ./
           cat > Play-Call-Break.bat <<'BAT'
           @echo off
           cd /d "%~dp0"
@@ -62,10 +63,6 @@ jobs:
           The artifact includes `MyGame.exe`, `MyGameServer.exe`, and `Assets/`.
           MD
 
-      - name: Keep workflow file
-        run: |
-          git checkout HEAD -- .github/workflows/build-playable.yml
-
       - name: Commit copied source if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -84,41 +81,42 @@ jobs:
     needs: [sync-source]
     if: always() && (needs.sync-source.result == 'success' || needs.sync-source.result == 'skipped')
     steps:
-      - name: Checkout repo
+      - name: Checkout playable repo
         uses: actions/checkout@v4
 
       - name: Configure CMake
-        shell: pwsh
-        run: |
-          cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build game
-        shell: pwsh
-        run: |
-          cmake --build build --config Release
+        run: cmake --build build --config Release --parallel
 
       - name: Create playable folder
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path package | Out-Null
-          Copy-Item -LiteralPath build\Release\MyGame.exe -Destination package\MyGame.exe
-          if (Test-Path -LiteralPath build\Release\MyGameServer.exe) {
-            Copy-Item -LiteralPath build\Release\MyGameServer.exe -Destination package\MyGameServer.exe
-          }
-          Copy-Item -LiteralPath Assets -Destination package\Assets -Recurse
+          Copy-Item build/Release/MyGame.exe package/
+          if (Test-Path build/Release/MyGameServer.exe) { Copy-Item build/Release/MyGameServer.exe package/ }
+          Copy-Item Assets package/Assets -Recurse
           @'
           @echo off
           cd /d "%~dp0"
+          if not exist "MyGame.exe" (
+            echo MyGame.exe was not found. Please extract the whole ZIP first.
+            pause
+            exit /b 1
+          )
           start "Call Break" "%~dp0MyGame.exe"
-          '@ | Set-Content -Encoding ASCII package\Play-Call-Break.bat
+          '@ | Set-Content -Encoding ASCII package/Play-Call-Break.bat
           @'
           Call Break Playable
+          ===================
 
           Double-click Play-Call-Break.bat to start the game.
-          Keep the Assets folder beside MyGame.exe.
-          '@ | Set-Content -Encoding UTF8 package\HOW_TO_PLAY.txt
 
-      - name: Upload playable ZIP artifact
+          Keep the Assets folder beside MyGame.exe.
+          '@ | Set-Content -Encoding UTF8 package/README.txt
+
+      - name: Upload playable Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: Call-Break-Playable-Windows
