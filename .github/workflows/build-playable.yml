@@ -13,7 +13,7 @@ jobs:
   sync-source:
     name: Copy source from original repo
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip source sync]') }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Checkout playable repo
         uses: actions/checkout@v4
@@ -79,7 +79,7 @@ jobs:
     name: Build Windows playable package
     runs-on: windows-latest
     needs: [sync-source]
-    if: always() && (needs.sync-source.result == 'success' || needs.sync-source.result == 'skipped')
+    if: always() && (github.event_name == 'push' || needs.sync-source.result == 'success' || needs.sync-source.result == 'skipped')
     steps:
       - name: Checkout playable repo
         uses: actions/checkout@v4
