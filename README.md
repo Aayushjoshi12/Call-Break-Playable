@@ -2,14 +2,14 @@
 
 Playable packaged copy of the Call Break C++ game.
 
-This repo is generated from `Aayushjoshi12/Call-Break-Using-CPP` without modifying the original repo.
+This repo is copied from `Aayushjoshi12/Call-Break-Using-CPP`. The original repo is not modified.
 
-## How to play
+## Direct play on Windows
 
-1. Open the **Actions** tab.
+1. Go to **Actions**.
 2. Open the latest **Build playable Windows ZIP** run.
-3. Download the `Call-Break-Playable-Windows` artifact.
-4. Extract the ZIP.
-5. Run `Play-Call-Break.bat`.
+3. Download artifact: `Call-Break-Playable-Windows`.
+4. Extract it.
+5. Double-click `Play-Call-Break.bat`.
 
-The ZIP includes the game executable and required `Assets` folder.
+The artifact includes `MyGame.exe`, `MyGameServer.exe`, and `Assets/`.
