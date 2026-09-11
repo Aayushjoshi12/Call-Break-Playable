@@ -55,7 +55,7 @@ target_include_directories(MyGame PRIVATE ${enet_SOURCE_DIR}/include)
 
 if(WIN32)
     target_compile_definitions(MyGame PRIVATE ${WINDOWS_RAYLIB_DEFINES})
-    target_link_options(MyGame PRIVATE -static)
+    target_link_libraries(MyGame PRIVATE ws2_32)
 endif()
 
 add_executable(MyGameServer
@@ -68,5 +68,5 @@ target_include_directories(MyGameServer PRIVATE ${enet_SOURCE_DIR}/include)
 
 if(WIN32)
     target_compile_definitions(MyGameServer PRIVATE ${WINDOWS_RAYLIB_DEFINES})
-    target_link_options(MyGameServer PRIVATE -static)
+    target_link_libraries(MyGameServer PRIVATE ws2_32)
 endif()
